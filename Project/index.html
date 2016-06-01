@@ -20,15 +20,85 @@
 	      #map {
 	        height: 100%;
 	      }
+	      .dropSheet
+		  {
+			    background-color/**/: #000000;
+			    background-image/**/: none;
+			    opacity: 0.5;
+			    filter: alpha(opacity=50);
+		  }
+		  .menu
+		  {
+			  position:absolute;
+			  opacity: 1;
+			  top:5%;  /* adjust value accordingly */
+			  left:70%;  /* adjust value accordingly */
+			  width:85%;
+		  }
+		  .options 
+		  {
+		  	width: 31%;
+		  	opacity: 0.9;
+		  }
 	    </style>
   	</head>
   	<body>
   		<!--Import jQuery before materialize.js-->
       	<script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
       	<script type="text/javascript" src="../Libraries/materialize/js/materialize.min.js"></script>
-	    <div id="map"></div>
+		<div id="map"></div>
+		<div class="menu">
+			<!-- Dropdown Trigger -->
+  			<a class='dropdown-button btn' href='#' data-activates='dropdown1'>New Set of Routes</a>
+		  	<!-- Dropdown Structure -->
+		  	<ul id='dropdown1' class='dropdown-content'>
+		    	<li><a href="#!">Red</a></li>
+		    	<li><a href="#!">Blue</a></li>
+		    	<li><a href="#!">Green</a></li>
+		  	</ul>
+		  	<div class="card large options">
+    			<ul class="collection">
+				    <li class="collection-item avatar">
+				      <i class="material-icons circle blue">navigation</i>
+				      <span class="title">Total Distance : <b>100 Km</b></span>
+				      <p>Source : Munich<br>
+				         Destination : Berlin
+				      </p>
+				      <a href="#!" class="secondary-content"><i class="material-icons">thumb_down</i></a>
+				    </li>
+				    <li class="collection-item avatar">
+				      <i class="material-icons circle blue">navigation</i>
+				      <span class="title">Total Distance : <b>100 Km</b></span>
+				      <p>Source : Munich<br>
+				         Destination : Berlin
+				      </p>
+				      <a href="#!" class="secondary-content"><i class="material-icons">thumb_down</i></a>
+				    </li>
+				    <li class="collection-item avatar">
+				      <i class="material-icons circle blue">navigation</i>
+				      <span class="title">Total Distance : <b>100 Km</b></span>
+				      <p>Source : Munich<br>
+				         Destination : Berlin
+				      </p>
+				      <a href="#!" class="secondary-content"><i class="material-icons">thumb_down</i></a>
+				    </li>
+				    
+				</ul>
+  			</div>
+		</div>
+		     	
 	    <script>
 	      	var map;
+	      	$('.dropdown-button').dropdown({
+			      inDuration: 300,
+			      outDuration: 225,
+			      constrain_width: false, // Does not change width of dropdown to that of the activator
+			      hover: false, // Activate on hover
+			      gutter: 0, // Spacing from edge
+			      belowOrigin: false, // Displays dropdown below the button
+			      alignment: 'left' // Displays dropdown with edge aligned to the left of button
+			    }
+			);
 	      	function initMap() {
 	        map = new google.maps.Map(document.getElementById('map'), {
 					center: Warehouse['geoLocations'],
