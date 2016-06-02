@@ -15,6 +15,7 @@ var defaultMarkers = [
 	{'city': 'Dresden' , 'geoLocations' : {lat: 51.0504, lng: 13.7373}},
 ];
 
+
 function addDefaultMarkers() {
 for (i=0;i< defaultMarkers.length; i++) {
 	marker[i] = new google.maps.Marker({
