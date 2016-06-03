@@ -1,9 +1,10 @@
 
-var Warehouse = {'city': 'Leipzig' , 'geoLocations' : {lat: 51.3397, lng: 12.3731}};
+
 
 
 function MenuController($scope, $mdDialog) {
     //$scope.currentRouteStart,$scope.currentRouteEnd,$scope.currentRouteStartFormatted,$scope.currentRouteEndFormatted;
+	$scope.Warehouse = {'city': 'Leipzig' , 'geoLocations' : {lat: 51.3397, lng: 12.3731}};
 	$scope.routeMarkingStarted = false;
 	$scope.routesList = {
 		'Red' : [], 
@@ -18,6 +19,7 @@ function MenuController($scope, $mdDialog) {
 	$scope.routeLine;
 	$scope.marker = [];
 	$scope.defaultMarkers = [
+		{'city': 'Warehouse' , 'geoLocations' : {lat: 51.3397, lng: 12.3731}},
 		{'city': 'Munich' , 'geoLocations' : {lat: 48.1351, lng: 11.5820}},
 		{'city': 'Hamburg' , 'geoLocations' : {lat: 53.5511, lng: 9.9937}},
 		{'city': 'Berlin' , 'geoLocations' : {lat: 52.5200, lng: 13.4050}},
@@ -43,19 +45,44 @@ function MenuController($scope, $mdDialog) {
     
     $scope.initMap = function() {
             $scope.map = new google.maps.Map(document.getElementById('map'), {
-              center: Warehouse['geoLocations'],
+              center: $scope.Warehouse['geoLocations'],
               mapTypeControl: false,
               streetViewControl: false,
               zoom: 6
             });
     };
 
+    $scope.addWarehouseMarker = function() {
+    	var image = {
+			  url: "../Project/icons/warehouse.png",
+			  size: new google.maps.Size(71, 71),
+			  origin: new google.maps.Point(0, 0),
+			  anchor: new google.maps.Point(17, 4),
+			  scaledSize: new google.maps.Size(25, 25)
+			};
+			$scope.marker[i] = new google.maps.Marker({
+			position: $scope.Warehouse[i]['geoLocations'],
+			map: $scope.map,
+			icon: image,
+			title: $scope.Warehouse['city'] + '-Warehouse'
+			});
+    }
 
 	$scope.addDefaultMarkers = function() {
 		for (i=0;i< $scope.defaultMarkers.length; i++) {
+			if (i == 0) {
+				var image = {
+				  url: "../Project/icons/warehouse.png",
+				  size: new google.maps.Size(71, 71),
+				  origin: new google.maps.Point(0, 0),
+				  anchor: new google.maps.Point(17, 4),
+				  scaledSize: new google.maps.Size(25, 25)
+				};
+			} else {var image = null;}
 			$scope.marker[i] = new google.maps.Marker({
 			position: $scope.defaultMarkers[i]['geoLocations'],
 			map: $scope.map,
+			icon: image,
 			title: $scope.defaultMarkers[i]['city'] + '_marker'
 			});
 			$scope.marker[i].addListener('click', function(event) {
@@ -207,6 +234,7 @@ function MenuController($scope, $mdDialog) {
 
 	/*Function calls after the controller is loaded*/
 	$scope.initMap();
+	//$scope.addWarehouseMarker();
 	$scope.addDefaultMarkers();
 	$scope.updateMapBasedOnColour();
 }
