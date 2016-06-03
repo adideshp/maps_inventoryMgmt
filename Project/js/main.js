@@ -52,13 +52,16 @@ function MenuController($scope, $mdDialog) {
 						$scope.updateRouteLine($scope.currentRouteStartFormatted, destination);
 					});
 				} else {
-					console.log("reached Destination of the route");
-					$scope.deleteRouteLine();
 					$scope.currentRouteEnd = new google.maps.LatLng(event.latLng.lat().toFixed(4), event.latLng.lng().toFixed(4));
 					$scope.currentRouteEndFormatted = {lat : parseFloat(event.latLng.lat().toFixed(4)), lng: parseFloat(event.latLng.lng().toFixed(4))};
-					$scope.displayRoute($scope.currentRouteStart,$scope.currentRouteEnd);
+					$scope.deleteRouteLine();
+					if ($scope.currentRouteStart.lat() ==  $scope.currentRouteEnd.lat() && $scope.currentRouteStart.lng() == $scope.currentRouteEnd.lng()) {
+						console.log("[Unacceptable] Source and Destination are same.");
+					} else {
+						console.log("reached Destination of the route");
+						$scope.displayRoute($scope.currentRouteStart,$scope.currentRouteEnd);
+					}
 				}
-				
 			});
 		}
 	};
