@@ -55,15 +55,15 @@
       <div layout="column" layout-md="column">
         <md-input-container class="md-block elements" flex-gt-sm="" style="min-width:200px;">
           <label>Select a Route Colour</label>
-          <md-select ng-model="user.state">
-            <md-option ng-repeat="colour in colourBox" value="{{colour.name}}">
-              {{colour.name}}
+          <md-select ng-model="colour" ng-change="updateMapBasedOnColour()">
+            <md-option ng-repeat="(name,value) in colourBox" value="{{name}}">
+              {{name}}
             </md-option>
           </md-select>
         </md-input-container>
       </div>
       <div layout="column" layout-md="column" style="overflow-y:auto;overflow-x:hidden;">
-      <div ng-repeat="route in routesList">
+      <div ng-repeat="route in routesList[colour]">
         <md-card class="customCard">
           <md-card-header style="padding: 0px;padding-top: 15px;">
             <md-card-avatar>

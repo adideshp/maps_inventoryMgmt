@@ -5,7 +5,16 @@ var Warehouse = {'city': 'Leipzig' , 'geoLocations' : {lat: 51.3397, lng: 12.373
 function MenuController($scope, $mdDialog) {
     //$scope.currentRouteStart,$scope.currentRouteEnd,$scope.currentRouteStartFormatted,$scope.currentRouteEndFormatted;
 	$scope.routeMarkingStarted = false;
-	$scope.routesList = [];
+	$scope.routesList = {
+		'Red' : [], 
+    	'Green' :[], 
+    	'Blue':[], 
+    	'Yellow':[], 
+    	'Black':[], 
+    	'White':[], 
+    	'Brown':[]
+	};
+	$scope.colour = 'Red';
 	$scope.routeLine;
 	$scope.marker = [];
 	$scope.defaultMarkers = [
@@ -18,9 +27,18 @@ function MenuController($scope, $mdDialog) {
 		{'city': 'Stuttgart' , 'geoLocations' : {lat: 48.7758, lng: 9.1829}},
 		{'city': 'Dresden' , 'geoLocations' : {lat: 51.0504, lng: 13.7373}},
 	];
-    $scope.colourBox = ('Red Green Blue Yellow Black White Brown').split(' ').map(function(colour) {
-    	return {name: colour};
-    });    
+
+    $scope.colourBox = {
+    	'Red' : '#FF0000', 
+    	'Green' :'#00FF00', 
+    	'Blue':'#0000FF', 
+    	'Yellow':'#FFFF00', 
+    	'Black':'#000000', 
+    	'White':'#FFFFFF', 
+    	'Brown':'#A52A2A'
+    };
+
+    
 
     
     $scope.initMap = function() {
@@ -122,7 +140,7 @@ function MenuController($scope, $mdDialog) {
 		$scope.routeLine = new google.maps.Polyline({
 			path: points,
 			geodesic: true,
-			strokeColor: '#5f84f2',
+			strokeColor: $scope.colourBox[$scope.colour],
 			strokeOpacity: 2.0,
 			strokeWeight: 2
 		});
@@ -134,7 +152,7 @@ function MenuController($scope, $mdDialog) {
 		line = new google.maps.Polyline({
 			path: points,
 			geodesic: true,
-			strokeColor: '#5f84f2',
+			strokeColor: $scope.colourBox[$scope.colour],
 			strokeOpacity: 5.0,
 			strokeWeight: 5
 		});
@@ -146,9 +164,9 @@ function MenuController($scope, $mdDialog) {
 			'polylineObject': []
 		};
 		routeList.polylineObject.push(line);
-		$scope.routesList.push(routeList);
+		$scope.routesList[$scope.colour].push(routeList);
 		$scope.$apply();
-		console.log($scope.routesList);
+		console.log($scope.routesList[$scope.colour]);
 	}
 
 	$scope.doSecondaryAction = function(event) {
@@ -163,18 +181,32 @@ function MenuController($scope, $mdDialog) {
   	};
 
   	$scope.deleteRoute = function(index) {
-  		$scope.routesList[index].polylineObject[0].setMap(null);
-  		var source = $scope.routesList[index].source;
-  		var destination = $scope.routesList[index].destination;
-  		if (index == 0) {$scope.routesList.splice(index,index+1);}
-  		else {$scope.routesList.splice(index,index);}
+  		$scope.routesList[$scope.colour][index].polylineObject[0].setMap(null);
+  		var source = $scope.routesList[$scope.colour][index].source;
+  		var destination = $scope.routesList[$scope.colour][index].destination;
+  		if (index == 0) {$scope.routesList[$scope.colour].splice(index,index+1);}
+  		else {$scope.routesList[$scope.colour].splice(index,index);}
   		console.log("Route " + source + " to " + destination + " deleted successfully.");
   	}
 
+
+  	$scope.updateMapBasedOnColour = function() {
+  		for (var entry in $scope.routesList) {
+  			if ($scope.colour !== entry) {
+  				for( var i=0; i< $scope.routesList[entry].length;i++) {
+  					$scope.routesList[entry][i].polylineObject[0].setMap(null);
+  				}
+  			} else {
+  				for( var i=0; i< $scope.routesList[entry].length;i++) {
+  					$scope.routesList[entry][i].polylineObject[0].setMap($scope.map);
+  				}
+  			}
+  		}
+  	}
 
 
 	/*Function calls after the controller is loaded*/
 	$scope.initMap();
 	$scope.addDefaultMarkers();
-
+	$scope.updateMapBasedOnColour();
 }
