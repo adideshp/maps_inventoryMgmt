@@ -25,15 +25,21 @@
         }
         .options 
         {
-          opacity: 0.9;
-          background-color: #ffffff;
+          opacity: 1;
+          background-color: #fafafa;
           height: 575px;
           max-width: 30%;
         }
         .elements
         {
+          opacity: 1; !important
+          background-color: #fafafa;
+        }
+        .customCard {
+          margin : 0px;
+          height:15%;
+          width:340px;
           opacity: 1;
-          background-color: #ffffff;
         }
   </style>
   <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBEFOaDQJefI-MpLQzCKJel6MxXK3oorPk"></script>
@@ -56,17 +62,39 @@
           </md-select>
         </md-input-container>
       </div>
-      <div layout="column" layout-md="column">
+      <div layout="column" layout-md="column" style="overflow-y:auto;overflow-x:hidden;">
+      <div ng-repeat="route in routesList">
+        <md-card class="customCard">
+          <md-card-header style="padding: 0px;padding-top: 15px;">
+            <md-card-avatar>
+              <md-icon style="margin-left:0px; !important"class="md-avatar-icon" md-svg-icon="img/icons/menu.svg"></md-icon>
+            </md-card-avatar>
+            <md-card-header-text>
+              <span class="md-title">Distance : {{ route.distance }}</span>
+              <span class="md-subhead">Source : {{ route.source }}</span>
+              <span class="md-subhead" style="margin-top:-8px;">Destination : {{ route.destination }}</span>
+            </md-card-header-text>
+            <md-button class="md-secondary" ng-click="deleteRoute($index)">Delete</md-button>
+          </md-card-header>
+        </md-card>
+      </div>
+      
+
+
+
+      <!--
+
+
         <md-subheader class="md-no-sticky">Routes added</md-subheader>
-          <md-list-item class="md-3-line" ng-repeat="route in routeList" ng-click="null">
-            <img ng-src="{{item.face}}?{{$index}}" class="md-avatar" alt="{{item.who}}">
+          <md-list-item class="md-3-line" ng-repeat="route in routesList" ng-click="null">
             <div class="md-list-item-text" layout="column">
-              <h3>Total distance covered : {{ route.distanceCovered }} Miles</h3>
+              <h3>Total distance covered : {{ route.distance }} Miles</h3>
               <h4>Source : {{ route.source }}</h4>
               <h4>Destination : {{ route.destination }}</h4>
             </div>
           </md-list-item>
           <md-divider></md-divider>
+          -->
       </div>
       </md-whiteframe>
     </div>

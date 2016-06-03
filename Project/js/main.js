@@ -2,10 +2,10 @@
 var Warehouse = {'city': 'Leipzig' , 'geoLocations' : {lat: 51.3397, lng: 12.3731}};
 
 
-function MenuController($scope) {
+function MenuController($scope, $mdDialog) {
     //$scope.currentRouteStart,$scope.currentRouteEnd,$scope.currentRouteStartFormatted,$scope.currentRouteEndFormatted;
 	$scope.routeMarkingStarted = false;
-	$scope.routeLines = [];
+	$scope.routesList = [];
 	$scope.routeLine;
 	$scope.marker = [];
 	$scope.defaultMarkers = [
@@ -63,6 +63,17 @@ function MenuController($scope) {
 		}
 	};
 
+	$scope.findCity = function(latitude, longitude) {
+		latitude = Number((latitude).toFixed(4));
+		longitude = Number((longitude).toFixed(4));
+		for (var i=0; i<$scope.defaultMarkers.length; i++) {
+			if ($scope.defaultMarkers[i].geoLocations.lat == latitude && $scope.defaultMarkers[i].geoLocations.lng ==longitude) {
+				return $scope.defaultMarkers[i].city;
+			} 
+		}
+		return null;
+	}
+ 
 
 	$scope.displayRoute = function(start, end) {
 		var directionsDisplay = new google.maps.DirectionsRenderer();// also, constructor can get "DirectionsRendererOptions" object
@@ -78,7 +89,13 @@ function MenuController($scope) {
 		    if (status == google.maps.DirectionsStatus.OK) {
 		        //directionsDisplay.setDirections(response); <-- Google's way of displaying a path
 		        console.log("Response Successful");
-		        $scope.addValidRouteLine(response.routes[0].overview_path);
+		        console.log(response.routes[0].legs[0].distance.text);
+		        var routeInfo = {
+		        	'source' : $scope.findCity(start.lat(), start.lng()), 
+					'destination': $scope.findCity(end.lat(), end.lng()), 
+					'distance': response.routes[0].legs[0].distance.text
+		        };
+		        $scope.addValidRouteLine(response.routes[0].overview_path, routeInfo);
 		    }
 		});
 	};
@@ -110,8 +127,7 @@ function MenuController($scope) {
 	}
 
 
-	$scope.addValidRouteLine = function(points) {
-		line = null;
+	$scope.addValidRouteLine = function(points,routeInfo) {
 		line = new google.maps.Polyline({
 			path: points,
 			geodesic: true,
@@ -120,8 +136,38 @@ function MenuController($scope) {
 			strokeWeight: 5
 		});
 		line.setMap($scope.map);
-		$scope.routeLines.push(line);
+		var routeList = {
+			'source' : routeInfo.source, 
+			'destination': routeInfo.destination, 
+			'distance': routeInfo.distance, 
+			'polylineObject': []
+		};
+		routeList.polylineObject.push(line);
+		$scope.routesList.push(routeList);
+		$scope.$apply();
+		console.log($scope.routesList);
 	}
+
+	$scope.doSecondaryAction = function(event) {
+    	$mdDialog.show(
+	      $mdDialog.alert()
+	        .title('Secondary Action')
+	        .textContent('Secondary actions can be used for one click actions')
+	        .ariaLabel('Secondary click demo')
+	        .ok('Neat!')
+	        .targetEvent(event)
+    	);
+  	};
+
+  	$scope.deleteRoute = function(index) {
+  		$scope.routesList[index].polylineObject[0].setMap(null);
+  		var source = $scope.routesList[index].source;
+  		var destination = $scope.routesList[index].destination;
+  		if (index == 0) {$scope.routesList.splice(index,index+1);}
+  		else {$scope.routesList.splice(index,index);}
+  		console.log("Route " + source + " to " + destination + " deleted successfully.");
+  	}
+
 
 
 	/*Function calls after the controller is loaded*/
