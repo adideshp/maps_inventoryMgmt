@@ -22,13 +22,22 @@ function MenuController($scope) {
     	return {name: colour};
     });    
 
+    
+    $scope.initMap = function() {
+            $scope.map = new google.maps.Map(document.getElementById('map'), {
+              center: Warehouse['geoLocations'],
+              mapTypeControl: false,
+              streetViewControl: false,
+              zoom: 6
+            });
+    };
 
 
 	$scope.addDefaultMarkers = function() {
 		for (i=0;i< $scope.defaultMarkers.length; i++) {
 			$scope.marker[i] = new google.maps.Marker({
 			position: $scope.defaultMarkers[i]['geoLocations'],
-			map: map,
+			map: $scope.map,
 			title: $scope.defaultMarkers[i]['city'] + '_marker'
 			});
 			$scope.marker[i].addListener('click', function(event) {
@@ -38,7 +47,7 @@ function MenuController($scope) {
 					$scope.currentRouteStart = new google.maps.LatLng(event.latLng.lat().toFixed(4), event.latLng.lng().toFixed(4));
 					$scope.currentRouteStartFormatted = {lat : parseFloat(event.latLng.lat().toFixed(4)), lng: parseFloat(event.latLng.lng().toFixed(4))};
 					$scope.addRouteLine($scope.currentRouteStartFormatted, $scope.currentRouteStartFormatted, []);
-					map.addListener('mousemove', function(event) {
+					$scope.map.addListener('mousemove', function(event) {
 						destination = {lat : parseFloat(event.latLng.lat().toFixed(4)), lng: parseFloat(event.latLng.lng().toFixed(4))};
 						$scope.updateRouteLine($scope.currentRouteStartFormatted, destination);
 					});
@@ -57,7 +66,7 @@ function MenuController($scope) {
 
 	$scope.displayRoute = function(start, end) {
 		var directionsDisplay = new google.maps.DirectionsRenderer();// also, constructor can get "DirectionsRendererOptions" object
-		directionsDisplay.setMap(map); // map should be already initialized.
+		directionsDisplay.setMap($scope.map); // map should be already initialized.
 
 		var request = {
 		    origin : start,
@@ -97,7 +106,7 @@ function MenuController($scope) {
 			strokeOpacity: 2.0,
 			strokeWeight: 2
 		});
-		$scope.routeLine.setMap(map);
+		$scope.routeLine.setMap($scope.map);
 	}
 
 
@@ -110,12 +119,13 @@ function MenuController($scope) {
 			strokeOpacity: 5.0,
 			strokeWeight: 5
 		});
-		line.setMap(map);
+		line.setMap($scope.map);
 		$scope.routeLines.push(line);
 	}
 
 
 	/*Function calls after the controller is loaded*/
+	$scope.initMap();
 	$scope.addDefaultMarkers();
 
 }
